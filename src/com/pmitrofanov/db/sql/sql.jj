@@ -1,3 +1,7 @@
+options {
+    IGNORE_CASE = true;
+}
+
 PARSER_BEGIN(SQLParser)
 
 package com.pmitrofanov.db.sql;
@@ -9,6 +13,8 @@ public class SQLParser {
     parser = new SQLParser(System.in);
     parser.SqlScript();
   }
+
+  // generated parser is inserted here.
 }
 
 PARSER_END(SQLParser)
@@ -660,6 +666,7 @@ void ValueExpression() :
         |   LogicalTest()
         |   NullTest()
         |   BetweenTest()
+        |   InTest()
     )*
 }
 
@@ -761,7 +768,7 @@ void OperandExpression() :
 void UnaryOperator() :
 {}
 {
-    ( <EXCLAMATION> | <NOT> | <TILDE> | <MINUS> )
+    ( <EXCLAMATION> | <NOT> | <TILDE> | <MINUS> | <PLUS> )
     OperandExpression()
 }
 
@@ -866,7 +873,6 @@ void BuiltInFunctionCall() :
         CastCall()
     |   ConvertCall()
     |   ExistsCall()
-    |   InCall()
     |   CaseCall()
 }
 
@@ -896,8 +902,8 @@ void ConvertCall() :
 {}
 {
     <CONVERT> <L_PAREN>
-    Argument() <R_PAREN>
-    <USING> EncodingName()
+    Argument()
+    <USING> EncodingName() <R_PAREN>
 }
 
 /*
@@ -916,7 +922,7 @@ void ExistsCall() :
 	IN { <subquery> | <left paren> <arg list> <right paren> }
 */
 
-void InCall() :
+void InTest() :
 {}
 {
     <IN> ( LOOKAHEAD(2) Subquery() | <L_PAREN> ArgList() <R_PAREN> )
@@ -959,7 +965,7 @@ void SearchedCaseExpression() :
 {}
 {
     WhenClauses()
-    <ELSE> DefaultExpression()
+    [ <ELSE> DefaultExpression() ]
 }
 
 /*
@@ -1234,56 +1240,3 @@ void DatetimeType() :
     <DATE> | <TIME> | <DATETIME>
 }
 
-
-// ##############################################################
-
-
-
-
-
-/*
-<identifier> ::= !! identifier
-
-<numeric or string literal> ::= !! literal
-
-<semicolon> ::= ;
-
-<comma> ::= ,
-
-<period> ::= .
-
-<left paren> ::= (
-
-<right paren> ::= )
-
-<plus> ::= +
-
-<minus> ::= -
-
-<asterisk> ::= *
-
-<slash> ::= /
-
-<percent> ::= %
-
-<lt> ::= !!"<"
-
-<gt> ::= !!">"
-
-<eq> ::= !!"="
-
-<lte> ::= !!"<="
-
-<gte> ::= !!">="
-
-<ne> ::= <ne1> | <ne2>
-
-<ne1> ::= !!"<>"
-
-<ne2> ::= !!"!="
-
-<exclamation> ::= !!"!"
-
-<tilde> ::= ~
-
-*/
