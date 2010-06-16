@@ -282,6 +282,7 @@ void Query() :
   [ FromList()
     [ WhereClause() ]
     [ GroupByClause() ]
+    [ HavingClause() ]
     [ OrderByClause() ]
     [ LimitClause() ]
   ]
@@ -625,13 +626,14 @@ void LimitCount() :
 	| <parenthesized expression>
 */
 
+/*
 void ValueExpression() :
 {}
 {
         LOOKAHEAD(2) BinaryOperator()
     |   ParenthesizedExpression()
 }
-
+*/
 /*
 <binary operator> ::=
 	<operand expression>
@@ -648,7 +650,7 @@ void ValueExpression() :
 	]
 */
 
-void BinaryOperator() :
+void ValueExpression() :
 {}
 {
     OperandExpression()
@@ -775,9 +777,10 @@ void UnaryOperand() :
 {}
 {
         LOOKAHEAD(2) FunctionCall()
-    |   Subquery()
+    |   LOOKAHEAD(2) Subquery()
     |   Literal()
     |   ColumnExpression()
+    |   ParenthesizedExpression()
 }
 
 /*
@@ -838,7 +841,7 @@ void ArgList() :
 /*
 <aggregate function call> ::=
 	{ MIN | MAX | COUNT | AVG | SUM | AGGREGATE <function name> }
-	<left paren> [ ALL | DISTINCT ] <argument> <right paren>
+	<left paren> [ ALL | DISTINCT ] { ASTERISK | <argument> } <right paren>
 */
 
 void AggregateFunctionCall() :
