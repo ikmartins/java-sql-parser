@@ -348,7 +348,7 @@ void FromList() :
 void FromListExpression() :
 {}
 {
-    Relation() [ JoinedRelations() ]
+    Relation() ( LOOKAHEAD(2) JoinClause() )*
 }
 
 /*
@@ -427,47 +427,6 @@ void RelationName() :
 {}
 {
     <IDENTIFIER>
-}
-
-/*
-<joined relations> ::=
-	<joined relation head>
-	<joins spec>
-*/
-
-void JoinedRelations() :
-{}
-{
-    JoinedRelationHead()
-    JoinsSpec()
-}
-
-/*
-<joined relation head> ::=
-  	  <single relation>
-	| <subquery>
-*/
-
-void JoinedRelationHead() :
-{}
-{
-        SingleRelation()
-    |   Subquery()
-}
-
-/*
-<joins spec> ::=
-	<join clause>
-	<joins spec rest>
-
-<joins spec rest> ::=
-	[ <join clause> <joins spec rest> ]
-*/
-
-void JoinsSpec() :
-{}
-{
-    ( LOOKAHEAD(2) JoinClause() )+
 }
 
 /*
