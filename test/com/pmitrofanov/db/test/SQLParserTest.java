@@ -235,4 +235,111 @@ public class SQLParserTest {
     public void testInlineViewEquijoin() {
         passString("select x,y from (select x,y from t1), t2 where c1=c2;");
     }
+
+    @Test
+    public void testWhere() {
+        passString("select x from t1 where c1=10;");
+    }
+
+    @Test
+    public void testHaving() {
+        passString("select x from t1 group by x having count(y)=10;");
+    }
+
+    @Test
+    public void testMultipleEquijoins() {
+        passString("select * from t1, t2, t3 where 1;");
+    }
+
+    @Test
+    public void testMultipleAnsiJoins() {
+        passString("select * from t1 " +
+                    "inner join t2 on 1 " +
+                    "left join t3 on 2 " +
+                    "left outer join t4 on 1 " +
+                    "right join t5 on 1 " +
+                    "right outer join t6 on 1 " +
+                    "cross join t7 " +
+                    "inner join t8 on 1;");
+    }
+
+    @Test
+    public void testSubqueryEquijoin() {
+        passString("select * from (select * from t1), (select * from t2) where x=y;");
+    }
+
+    @Test
+    public void testSubqueryAliasEquijoin() {
+        passString("select * from (select * from t1) q1, (select * from t2) q2 where q1.x=q2.y;");
+    }
+
+    @Test
+    public void testSubqueryAnsiJoin() {
+        passString("select * from (select * from t1) left join (select * from t2) on x=y;");
+    }
+
+    @Test
+    public void testAllJoins() {
+        passString("select * from t0, t1 " +
+                    "inner join t2 on 1 " +
+                    "left join t3 on 2 " +
+                    "left outer join t4 on 1 " +
+                    "right join t5 on 1 " +
+                    "right outer join t6 on 1 " +
+                    "cross join t7 " +
+                    "inner join (select * from t8, t9 inner join t0 on 1 where x=y) q8 on 1" +
+                    "where x=y;");
+    }
+
+
+    @Test
+    public void testAllJoinsGroupByHavingOrderBy() {
+        passString("select t0.x, t1.y yy, avg(q8.v) from t0, t1 " +
+                    "inner join t2 on 1 " +
+                    "left join t3 on 2 " +
+                    "left outer join t4 on 1 " +
+                    "right join t5 on 1 " +
+                    "right outer join t6 on 1 " +
+                    "cross join t7 " +
+                    "inner join (select * from t8, t9 inner join t0 on 1 where x=y) q8 on 1 " +
+                    "where x=y " +
+                    "group by t0.x, t1.y " +
+                    "having max(t3.z) < 100 " +
+                    "order by 2 desc, 1 asc;");
+    }
+
+    @Test
+    public void testArithmeticalOperator() {
+        passString("select x*118/100 x_s_nds, 10 - x + 10 as same_as_x from t1;");
+    }
+
+    @Test
+    public void testEqualityTest() {
+        passString("select x=10 as x_10, x<10 as x_less, x>=10 as x_more from t1;");
+    }
+
+    @Test
+    public void testLogicalTest() {
+        passString("select a and b sideli_na_trube, x like 'smth%' like_smth, a xor b as hash from t1;");
+    }
+
+    @Test
+    public void testNullTest() {
+        passString("select a is null, b is not null, kto ostalsa_na_trube from t1;");
+    }
+
+    @Test
+    public void testBetweenTest() {
+        passString("select x between 1 and 10 dec from t1;");
+    }
+
+    @Test
+    public void testAndBetweenTest() {
+        passString("select x between 1 and 10 and c between x and x*2 cc from t1;");
+    }
+
+    @Test
+    public void testParens() {
+        passString("select (x), (x+y)*100/z-6 from t1;");
+    }
 }
