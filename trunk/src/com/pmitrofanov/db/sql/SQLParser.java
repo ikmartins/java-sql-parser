@@ -274,14 +274,14 @@ public class SQLParser implements SQLParserConstants {
 */
   static final public void FromListExpression() throws ParseException {
     Relation();
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case IDENTIFIER:
-    case L_PAREN:
-      JoinedRelations();
-      break;
-    default:
-      jj_la1[13] = jj_gen;
-      ;
+    label_4:
+    while (true) {
+      if (jj_2_4(2)) {
+        ;
+      } else {
+        break label_4;
+      }
+      JoinClause();
     }
   }
 
@@ -299,7 +299,7 @@ public class SQLParser implements SQLParserConstants {
       NamedSubquery();
       break;
     default:
-      jj_la1[14] = jj_gen;
+      jj_la1[13] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -311,13 +311,13 @@ public class SQLParser implements SQLParserConstants {
 */
   static final public void NamedSubquery() throws ParseException {
     Subquery();
-    if (jj_2_4(2)) {
+    if (jj_2_5(2)) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case AS:
         jj_consume_token(AS);
         break;
       default:
-        jj_la1[15] = jj_gen;
+        jj_la1[14] = jj_gen;
         ;
       }
       Alias();
@@ -342,13 +342,13 @@ public class SQLParser implements SQLParserConstants {
 */
   static final public void SingleRelation() throws ParseException {
     RelationSpec();
-    if (jj_2_5(2)) {
+    if (jj_2_6(2)) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case AS:
         jj_consume_token(AS);
         break;
       default:
-        jj_la1[16] = jj_gen;
+        jj_la1[15] = jj_gen;
         ;
       }
       Alias();
@@ -361,7 +361,7 @@ public class SQLParser implements SQLParserConstants {
 <relation spec> ::= [ <schema name> <period> ] <relation name>
 */
   static final public void RelationSpec() throws ParseException {
-    if (jj_2_6(2)) {
+    if (jj_2_7(2)) {
       SchemaName();
       jj_consume_token(PERIOD);
     } else {
@@ -382,56 +382,6 @@ public class SQLParser implements SQLParserConstants {
 */
   static final public void RelationName() throws ParseException {
     jj_consume_token(IDENTIFIER);
-  }
-
-/*
-<joined relations> ::=
-	<joined relation head>
-	<joins spec>
-*/
-  static final public void JoinedRelations() throws ParseException {
-    JoinedRelationHead();
-    JoinsSpec();
-  }
-
-/*
-<joined relation head> ::=
-  	  <single relation>
-	| <subquery>
-*/
-  static final public void JoinedRelationHead() throws ParseException {
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case IDENTIFIER:
-      SingleRelation();
-      break;
-    case L_PAREN:
-      Subquery();
-      break;
-    default:
-      jj_la1[17] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-  }
-
-/*
-<joins spec> ::=
-	<join clause>
-	<joins spec rest>
-
-<joins spec rest> ::=
-	[ <join clause> <joins spec rest> ]
-*/
-  static final public void JoinsSpec() throws ParseException {
-    label_4:
-    while (true) {
-      JoinClause();
-      if (jj_2_7(2)) {
-        ;
-      } else {
-        break label_4;
-      }
-    }
   }
 
 /*
@@ -456,7 +406,7 @@ public class SQLParser implements SQLParserConstants {
       CrossJoinSpec();
       break;
     default:
-      jj_la1[18] = jj_gen;
+      jj_la1[16] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -472,7 +422,7 @@ public class SQLParser implements SQLParserConstants {
       jj_consume_token(INNER);
       break;
     default:
-      jj_la1[19] = jj_gen;
+      jj_la1[17] = jj_gen;
       ;
     }
     jj_consume_token(JOIN);
@@ -492,7 +442,7 @@ public class SQLParser implements SQLParserConstants {
       jj_consume_token(RIGHT);
       break;
     default:
-      jj_la1[20] = jj_gen;
+      jj_la1[18] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -501,7 +451,7 @@ public class SQLParser implements SQLParserConstants {
       jj_consume_token(OUTER);
       break;
     default:
-      jj_la1[21] = jj_gen;
+      jj_la1[19] = jj_gen;
       ;
     }
     jj_consume_token(JOIN);
@@ -573,7 +523,7 @@ public class SQLParser implements SQLParserConstants {
         ;
         break;
       default:
-        jj_la1[22] = jj_gen;
+        jj_la1[20] = jj_gen;
         break label_5;
       }
       jj_consume_token(COMMA);
@@ -616,7 +566,7 @@ public class SQLParser implements SQLParserConstants {
         ;
         break;
       default:
-        jj_la1[23] = jj_gen;
+        jj_la1[21] = jj_gen;
         break label_6;
       }
       jj_consume_token(COMMA);
@@ -640,13 +590,13 @@ public class SQLParser implements SQLParserConstants {
         jj_consume_token(DESC);
         break;
       default:
-        jj_la1[24] = jj_gen;
+        jj_la1[22] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[25] = jj_gen;
+      jj_la1[23] = jj_gen;
       ;
     }
   }
@@ -664,7 +614,7 @@ public class SQLParser implements SQLParserConstants {
       LimitCount();
       break;
     default:
-      jj_la1[26] = jj_gen;
+      jj_la1[24] = jj_gen;
       ;
     }
   }
@@ -699,7 +649,7 @@ public class SQLParser implements SQLParserConstants {
         ParenthesizedExpression();
         break;
       default:
-        jj_la1[27] = jj_gen;
+        jj_la1[25] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -748,7 +698,7 @@ public class SQLParser implements SQLParserConstants {
         ;
         break;
       default:
-        jj_la1[28] = jj_gen;
+        jj_la1[26] = jj_gen;
         break label_7;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -782,7 +732,7 @@ public class SQLParser implements SQLParserConstants {
         BetweenTest();
         break;
       default:
-        jj_la1[29] = jj_gen;
+        jj_la1[27] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -818,7 +768,7 @@ public class SQLParser implements SQLParserConstants {
       jj_consume_token(MOD);
       break;
     default:
-      jj_la1[30] = jj_gen;
+      jj_la1[28] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -851,7 +801,7 @@ public class SQLParser implements SQLParserConstants {
       jj_consume_token(NE);
       break;
     default:
-      jj_la1[31] = jj_gen;
+      jj_la1[29] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -878,7 +828,7 @@ public class SQLParser implements SQLParserConstants {
       jj_consume_token(XOR);
       break;
     default:
-      jj_la1[32] = jj_gen;
+      jj_la1[30] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -896,7 +846,7 @@ public class SQLParser implements SQLParserConstants {
       jj_consume_token(NOT);
       break;
     default:
-      jj_la1[33] = jj_gen;
+      jj_la1[31] = jj_gen;
       ;
     }
     jj_consume_token(NULL);
@@ -961,7 +911,7 @@ public class SQLParser implements SQLParserConstants {
       UnaryOperand();
       break;
     default:
-      jj_la1[34] = jj_gen;
+      jj_la1[32] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -987,7 +937,7 @@ public class SQLParser implements SQLParserConstants {
       jj_consume_token(MINUS);
       break;
     default:
-      jj_la1[35] = jj_gen;
+      jj_la1[33] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1021,7 +971,7 @@ public class SQLParser implements SQLParserConstants {
         ColumnExpression();
         break;
       default:
-        jj_la1[36] = jj_gen;
+        jj_la1[34] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1055,7 +1005,7 @@ public class SQLParser implements SQLParserConstants {
       BuiltInFunctionCall();
       break;
     default:
-      jj_la1[37] = jj_gen;
+      jj_la1[35] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1098,7 +1048,7 @@ public class SQLParser implements SQLParserConstants {
         ;
         break;
       default:
-        jj_la1[38] = jj_gen;
+        jj_la1[36] = jj_gen;
         break label_8;
       }
       jj_consume_token(COMMA);
@@ -1133,7 +1083,7 @@ public class SQLParser implements SQLParserConstants {
       FunctionName();
       break;
     default:
-      jj_la1[39] = jj_gen;
+      jj_la1[37] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1149,13 +1099,13 @@ public class SQLParser implements SQLParserConstants {
         jj_consume_token(DISTINCT);
         break;
       default:
-        jj_la1[40] = jj_gen;
+        jj_la1[38] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[41] = jj_gen;
+      jj_la1[39] = jj_gen;
       ;
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1188,7 +1138,7 @@ public class SQLParser implements SQLParserConstants {
       Argument();
       break;
     default:
-      jj_la1[42] = jj_gen;
+      jj_la1[40] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1221,7 +1171,7 @@ public class SQLParser implements SQLParserConstants {
       CaseCall();
       break;
     default:
-      jj_la1[43] = jj_gen;
+      jj_la1[41] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1282,7 +1232,7 @@ public class SQLParser implements SQLParserConstants {
         jj_consume_token(R_PAREN);
         break;
       default:
-        jj_la1[44] = jj_gen;
+        jj_la1[42] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1325,7 +1275,7 @@ public class SQLParser implements SQLParserConstants {
       SearchedCaseExpression();
       break;
     default:
-      jj_la1[45] = jj_gen;
+      jj_la1[43] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1370,7 +1320,7 @@ public class SQLParser implements SQLParserConstants {
         ;
         break;
       default:
-        jj_la1[46] = jj_gen;
+        jj_la1[44] = jj_gen;
         break label_9;
       }
     }
@@ -1440,7 +1390,7 @@ public class SQLParser implements SQLParserConstants {
         UnqualifiedColumnName();
         break;
       default:
-        jj_la1[47] = jj_gen;
+        jj_la1[45] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1527,7 +1477,7 @@ public class SQLParser implements SQLParserConstants {
       NullLiteral();
       break;
     default:
-      jj_la1[48] = jj_gen;
+      jj_la1[46] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1545,7 +1495,7 @@ public class SQLParser implements SQLParserConstants {
       jj_consume_token(STRING_LITERAL);
       break;
     default:
-      jj_la1[49] = jj_gen;
+      jj_la1[47] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1563,7 +1513,7 @@ public class SQLParser implements SQLParserConstants {
       jj_consume_token(FALSE);
       break;
     default:
-      jj_la1[50] = jj_gen;
+      jj_la1[48] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1607,7 +1557,7 @@ public class SQLParser implements SQLParserConstants {
       DatetimeType();
       break;
     default:
-      jj_la1[51] = jj_gen;
+      jj_la1[49] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1634,7 +1584,7 @@ public class SQLParser implements SQLParserConstants {
       jj_consume_token(BIGINT);
       break;
     default:
-      jj_la1[52] = jj_gen;
+      jj_la1[50] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1652,7 +1602,7 @@ public class SQLParser implements SQLParserConstants {
       jj_consume_token(VARCHAR);
       break;
     default:
-      jj_la1[53] = jj_gen;
+      jj_la1[51] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1680,7 +1630,7 @@ public class SQLParser implements SQLParserConstants {
       jj_consume_token(DATETIME);
       break;
     default:
-      jj_la1[54] = jj_gen;
+      jj_la1[52] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1770,19 +1720,33 @@ public class SQLParser implements SQLParserConstants {
     finally { jj_save(11, xla); }
   }
 
-  static private boolean jj_3R_58() {
-    if (jj_scan_token(EXISTS)) return true;
-    if (jj_3R_13()) return true;
-    return false;
-  }
-
   static private boolean jj_3R_69() {
     if (jj_3R_13()) return true;
     return false;
   }
 
-  static private boolean jj_3R_44() {
-    if (jj_scan_token(IS)) return true;
+  static private boolean jj_3R_72() {
+    if (jj_3R_77()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_29() {
+    if (jj_3R_40()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_28() {
+    if (jj_3R_39()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_19() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_28()) {
+    jj_scanpos = xsp;
+    if (jj_3R_29()) return true;
+    }
     return false;
   }
 
@@ -1806,9 +1770,101 @@ public class SQLParser implements SQLParserConstants {
     return false;
   }
 
+  static private boolean jj_3_4() {
+    if (jj_3R_10()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_67() {
+    if (jj_3R_73()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_66() {
+    if (jj_3R_72()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_60() {
+    if (jj_scan_token(CASE)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_66()) {
+    jj_scanpos = xsp;
+    if (jj_3R_67()) return true;
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_81() {
+    if (jj_scan_token(L_PAREN)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_10() {
+    if (jj_3R_13()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_38() {
+    if (jj_3R_52()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_59() {
+    if (jj_scan_token(IN)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_10()) {
+    jj_scanpos = xsp;
+    if (jj_3R_65()) return true;
+    }
+    return false;
+  }
+
+  static private boolean jj_3_1() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(14)) jj_scanpos = xsp;
+    if (jj_scan_token(81)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_45() {
+    if (jj_scan_token(BETWEEN)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_58() {
+    if (jj_scan_token(EXISTS)) return true;
+    if (jj_3R_13()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_44() {
+    if (jj_scan_token(IS)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_3() {
+    if (jj_scan_token(81)) return true;
+    if (jj_scan_token(PERIOD)) return true;
+    if (jj_scan_token(81)) return true;
+    if (jj_scan_token(PERIOD)) return true;
+    if (jj_scan_token(ASTERISK)) return true;
+    return false;
+  }
+
   static private boolean jj_3R_57() {
     if (jj_scan_token(CONVERT)) return true;
     if (jj_scan_token(L_PAREN)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_2() {
+    if (jj_scan_token(81)) return true;
+    if (jj_scan_token(PERIOD)) return true;
+    if (jj_scan_token(ASTERISK)) return true;
     return false;
   }
 
@@ -1840,11 +1896,6 @@ public class SQLParser implements SQLParserConstants {
     return false;
   }
 
-  static private boolean jj_3R_38() {
-    if (jj_3R_52()) return true;
-    return false;
-  }
-
   static private boolean jj_3R_56() {
     if (jj_scan_token(CAST)) return true;
     if (jj_scan_token(L_PAREN)) return true;
@@ -1870,14 +1921,6 @@ public class SQLParser implements SQLParserConstants {
     }
     }
     }
-    return false;
-  }
-
-  static private boolean jj_3_1() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(14)) jj_scanpos = xsp;
-    if (jj_scan_token(81)) return true;
     return false;
   }
 
@@ -2031,19 +2074,8 @@ public class SQLParser implements SQLParserConstants {
     return false;
   }
 
-  static private boolean jj_3_3() {
-    if (jj_scan_token(81)) return true;
-    if (jj_scan_token(PERIOD)) return true;
-    if (jj_scan_token(81)) return true;
-    if (jj_scan_token(PERIOD)) return true;
-    if (jj_scan_token(ASTERISK)) return true;
-    return false;
-  }
-
-  static private boolean jj_3_2() {
-    if (jj_scan_token(81)) return true;
-    if (jj_scan_token(PERIOD)) return true;
-    if (jj_scan_token(ASTERISK)) return true;
+  static private boolean jj_3R_24() {
+    if (jj_scan_token(SELECT)) return true;
     return false;
   }
 
@@ -2150,16 +2182,6 @@ public class SQLParser implements SQLParserConstants {
     return false;
   }
 
-  static private boolean jj_3_7() {
-    if (jj_3R_10()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_24() {
-    if (jj_scan_token(SELECT)) return true;
-    return false;
-  }
-
   static private boolean jj_3R_35() {
     if (jj_scan_token(81)) return true;
     if (jj_scan_token(L_PAREN)) return true;
@@ -2168,6 +2190,14 @@ public class SQLParser implements SQLParserConstants {
 
   static private boolean jj_3R_23() {
     if (jj_3R_37()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_6() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(14)) jj_scanpos = xsp;
+    if (jj_scan_token(81)) return true;
     return false;
   }
 
@@ -2196,6 +2226,20 @@ public class SQLParser implements SQLParserConstants {
 
   static private boolean jj_3R_82() {
     if (jj_scan_token(WHEN)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_7() {
+    if (jj_scan_token(81)) return true;
+    if (jj_scan_token(PERIOD)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_74() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_7()) jj_scanpos = xsp;
+    if (jj_scan_token(81)) return true;
     return false;
   }
 
@@ -2229,6 +2273,11 @@ public class SQLParser implements SQLParserConstants {
     return false;
   }
 
+  static private boolean jj_3R_68() {
+    if (jj_3R_74()) return true;
+    return false;
+  }
+
   static private boolean jj_3_9() {
     if (jj_3R_12()) return true;
     return false;
@@ -2257,6 +2306,20 @@ public class SQLParser implements SQLParserConstants {
     jj_scanpos = xsp;
     if (jj_scan_token(35)) return true;
     }
+    return false;
+  }
+
+  static private boolean jj_3_5() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(14)) jj_scanpos = xsp;
+    if (jj_scan_token(81)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_13() {
+    if (jj_scan_token(L_PAREN)) return true;
+    if (jj_3R_24()) return true;
     return false;
   }
 
@@ -2323,119 +2386,6 @@ public class SQLParser implements SQLParserConstants {
     return false;
   }
 
-  static private boolean jj_3_5() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(14)) jj_scanpos = xsp;
-    if (jj_scan_token(81)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_72() {
-    if (jj_3R_77()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_29() {
-    if (jj_3R_40()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_28() {
-    if (jj_3R_39()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_19() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_28()) {
-    jj_scanpos = xsp;
-    if (jj_3R_29()) return true;
-    }
-    return false;
-  }
-
-  static private boolean jj_3_6() {
-    if (jj_scan_token(81)) return true;
-    if (jj_scan_token(PERIOD)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_74() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_6()) jj_scanpos = xsp;
-    if (jj_scan_token(81)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_67() {
-    if (jj_3R_73()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_66() {
-    if (jj_3R_72()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_68() {
-    if (jj_3R_74()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_60() {
-    if (jj_scan_token(CASE)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_66()) {
-    jj_scanpos = xsp;
-    if (jj_3R_67()) return true;
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_81() {
-    if (jj_scan_token(L_PAREN)) return true;
-    return false;
-  }
-
-  static private boolean jj_3_10() {
-    if (jj_3R_13()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_4() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(14)) jj_scanpos = xsp;
-    if (jj_scan_token(81)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_59() {
-    if (jj_scan_token(IN)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_10()) {
-    jj_scanpos = xsp;
-    if (jj_3R_65()) return true;
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_13() {
-    if (jj_scan_token(L_PAREN)) return true;
-    if (jj_3R_24()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_45() {
-    if (jj_scan_token(BETWEEN)) return true;
-    return false;
-  }
-
   static private boolean jj_initialized_once = false;
   /** Generated Token Manager. */
   static public SQLParserTokenManager token_source;
@@ -2448,7 +2398,7 @@ public class SQLParser implements SQLParserConstants {
   static private Token jj_scanpos, jj_lastpos;
   static private int jj_la;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[55];
+  static final private int[] jj_la1 = new int[53];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -2460,16 +2410,16 @@ public class SQLParser implements SQLParserConstants {
       jj_la1_init_3();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x0,0x40001000,0x40001000,0x3610800,0x0,0x0,0x0,0x0,0x0,0x0,0x4000,0x3610800,0x0,0x0,0x0,0x4000,0x4000,0x0,0x4000000,0x0,0x0,0x0,0x0,0x0,0x20008000,0x20008000,0x0,0x0,0x80022000,0x80022000,0x80000000,0x0,0x2000,0x0,0x3610800,0x0,0x0,0x3610800,0x0,0x2010800,0x40001000,0x40001000,0x3610800,0x1600000,0x0,0x3610800,0x0,0x0,0x0,0x0,0x0,0x188c0000,0x40000,0x800000,0x18000000,};
+      jj_la1_0 = new int[] {0x0,0x40001000,0x40001000,0x3610800,0x0,0x0,0x0,0x0,0x0,0x0,0x4000,0x3610800,0x0,0x0,0x4000,0x4000,0x4000000,0x0,0x0,0x0,0x0,0x0,0x20008000,0x20008000,0x0,0x0,0x80022000,0x80022000,0x80000000,0x0,0x2000,0x0,0x3610800,0x0,0x0,0x3610800,0x0,0x2010800,0x40001000,0x40001000,0x3610800,0x1600000,0x0,0x3610800,0x0,0x0,0x0,0x0,0x0,0x188c0000,0x40000,0x800000,0x18000000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x4000000,0x0,0x0,0x201b008c,0x0,0x20,0x800000,0x8000,0x10,0x0,0x0,0x201b008c,0x0,0x0,0x0,0x0,0x0,0x0,0x2003100,0x100,0x2002000,0x1000000,0x0,0x0,0x0,0x0,0x0,0x0,0x444800,0x444800,0x40000,0x0,0x404000,0x80000,0x201b008c,0x80000,0x100008,0x20030084,0x0,0x20030000,0x0,0x0,0x201b008c,0x84,0x0,0x201b008c,0x0,0x0,0x100008,0x0,0x8,0x8000600,0x8000600,0x0,0x0,};
+      jj_la1_1 = new int[] {0x4000000,0x0,0x0,0x201b008c,0x0,0x20,0x800000,0x8000,0x10,0x0,0x0,0x201b008c,0x0,0x0,0x0,0x0,0x2003100,0x100,0x2002000,0x1000000,0x0,0x0,0x0,0x0,0x0,0x0,0x444800,0x444800,0x40000,0x0,0x404000,0x80000,0x201b008c,0x80000,0x100008,0x20030084,0x0,0x20030000,0x0,0x0,0x201b008c,0x84,0x0,0x201b008c,0x0,0x0,0x100008,0x0,0x8,0x8000600,0x8000600,0x0,0x0,};
    }
    private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x0,0xc825104,0x40,0x0,0x0,0x0,0x0,0x200000,0x0,0x4825104,0x200000,0x820000,0x820000,0x0,0x0,0x820000,0x0,0x0,0x0,0x0,0x200000,0x200000,0x0,0x0,0x200000,0x800000,0xfe000080,0xfe000080,0x3e000000,0xc0000000,0x80,0x0,0x4825104,0x4000000,0x825104,0x20000,0x200000,0x0,0x0,0x0,0xc825104,0x0,0x800000,0x4825124,0x20,0x20000,0x5104,0x5100,0x4,0x13,0x2,0x10,0x1,};
+      jj_la1_2 = new int[] {0x0,0x0,0x0,0xc825104,0x40,0x0,0x0,0x0,0x0,0x200000,0x0,0x4825104,0x200000,0x820000,0x0,0x0,0x0,0x0,0x0,0x0,0x200000,0x200000,0x0,0x0,0x200000,0x800000,0xfe000080,0xfe000080,0x3e000000,0xc0000000,0x80,0x0,0x4825104,0x4000000,0x825104,0x20000,0x200000,0x0,0x0,0x0,0xc825104,0x0,0x800000,0x4825124,0x20,0x20000,0x5104,0x5100,0x4,0x13,0x2,0x10,0x1,};
    }
    private static void jj_la1_init_3() {
-      jj_la1_3 = new int[] {0x0,0x0,0x0,0xc0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xf,0xf,0x0,0xf,0x0,0x0,0xc0,0xc0,0x0,0x0,0x0,0x0,0x0,0x0,0xc0,0x0,0x0,0xc0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_3 = new int[] {0x0,0x0,0x0,0xc0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xf,0xf,0x0,0xf,0x0,0x0,0xc0,0xc0,0x0,0x0,0x0,0x0,0x0,0x0,0xc0,0x0,0x0,0xc0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
   static final private JJCalls[] jj_2_rtns = new JJCalls[12];
   static private boolean jj_rescan = false;
@@ -2493,7 +2443,7 @@ public class SQLParser implements SQLParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 55; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 53; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2508,7 +2458,7 @@ public class SQLParser implements SQLParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 55; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 53; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2526,7 +2476,7 @@ public class SQLParser implements SQLParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 55; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 53; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2537,7 +2487,7 @@ public class SQLParser implements SQLParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 55; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 53; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2554,7 +2504,7 @@ public class SQLParser implements SQLParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 55; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 53; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2564,7 +2514,7 @@ public class SQLParser implements SQLParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 55; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 53; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2681,7 +2631,7 @@ public class SQLParser implements SQLParserConstants {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 55; i++) {
+    for (int i = 0; i < 53; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
