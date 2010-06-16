@@ -342,4 +342,67 @@ public class SQLParserTest {
     public void testParens() {
         passString("select (x), (x+y)*100/z-6 from t1;");
     }
+
+    @Test
+    public void testUnaryOperator() {
+        passString("select not -!~x from t1;");
+    }
+
+    @Test
+    public void testUnaryOperand() {
+        passString("select ~count(1), not (select true from dual), !0, -x, +(2-1) y from t1;");
+    }
+
+    @Test
+    public void testFunctionCall() {
+        passString("select count(distinct x), some_func(1,2,3, 'qwe', (select 1)), exists(select 1/0 from dual) from t1;");
+    }
+
+    @Test
+    public void testAggregate() {
+        passString("select count(*), max(distinct x), min(all y), aggregate agg_func(z) from t1;");
+    }
+
+    @Test
+    public void testCastCall() {
+        passString("select cast(1 as varchar) from dual;");
+    }
+
+    @Test
+    public void testConvertCall() {
+        passString("select convert('smth' using utf8) from dual;");
+    }
+
+    @Test
+    public void testExistsCall() {
+        passString("select 1 from dual where exists(select 1/0 from dual);");
+    }
+
+    @Test
+    public void testInTest() {
+        passString("select 1 from t1 where x in (0, null) or y in (select yy from t2);");
+    }
+
+    @Test
+    public void testSimpleCaseCall() {
+        passString("select case x when 1 then 'POS' when -1 then 'NEG' end, " +
+                   "       case y when 0 then 'ZERO' else 'NOT' end " +
+                   "from t1;");
+    }
+
+    @Test
+    public void testSearchedCaseCall() {
+        passString("select case when x < 0 then 'NEG' when x > 0 then 'POS' else 'ZERO' end " +
+                   "from t1;");
+    }
+
+    @Test
+    public void testColQualifiers() {
+        passString("select x, tab2.y, t1.z, sch.t1.fully_qualified from sch.t1, t2 tab2;");
+    }
+
+    @Test
+    public void testLiteral() {
+        passString("select 1, 5.0, .6, 7., 8e10, 9E-2, 'x', \"y\", null, true, false from t1;");
+    }
 }
