@@ -14,6 +14,7 @@ import static org.junit.Assert.*;
 
 import com.pmitrofanov.db.sql.*;
 import java.io.*;
+import org.apache.commons.lang.*;
 
 /**
  *
@@ -22,6 +23,7 @@ import java.io.*;
 public class SQLParserTest {
     private SQLParser parser;
     private BufferedWriter writer;
+    private static int testNum = 1;
 
     public SQLParserTest() {
     }
@@ -55,21 +57,36 @@ public class SQLParserTest {
     // @Test
     // public void hello() {}
 
-    public void passString(String sql) {
+    private String recurseTree(Node t, int level) {
+        String res = StringUtils.repeat(": ", level)
+                   + t.toString() + "\n";
+        for (int i = 0; i < t.jjtGetNumChildren(); i++) {
+            res += recurseTree(t.jjtGetChild(i), level + 1);
+        }
+        return res;
+    }
+
+    private void passString(String sql) {
+        String testOutput = "Test " + testNum++ + ":\n\n" + sql + "\n\n";
         try {
             writer.write(sql);
             writer.close();
         } catch (IOException e) {
+            System.out.println(testOutput);
             throw new Error(e.getMessage());
         }
         try {
-            parser.SqlScript();
+            Node n = parser.SqlScript();
+            testOutput += recurseTree(n, 0);
         } catch (ParseException e) {
+            testOutput += "Invalid SQL\n";
             fail(e.getMessage());
+        } finally {
+            System.out.println(testOutput);
         }
     }
 
-    public void failString(String sql) {
+    private void failString(String sql) {
         boolean caught = false;
         try {
             passString(sql);
@@ -404,5 +421,15 @@ public class SQLParserTest {
     @Test
     public void testLiteral() {
         passString("select 1, 5.0, .6, 7., 8e10, 9E-2, 'x', \"y\", null, true, false from t1;");
+    }
+
+    @Test
+    public void testGluedKeywords() {
+        failString("selectcase 1when1 then 0 endfrom t1;");
+    }
+
+    @Test
+    public void testGlued() {
+        failString("select1fromt1;");
     }
 }
