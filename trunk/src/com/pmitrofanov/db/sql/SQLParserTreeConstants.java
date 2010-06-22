@@ -7,80 +7,83 @@ public interface SQLParserTreeConstants
   public int JJTSQLSTATEMENT = 1;
   public int JJTSQLOPERATOR = 2;
   public int JJTQUERY = 3;
-  public int JJTSELECTLIST = 4;
-  public int JJTSELECTEXPRESSION = 5;
-  public int JJTFROMLIST = 6;
-  public int JJTFROMLISTEXPRESSION = 7;
-  public int JJTRELATION = 8;
-  public int JJTNAMEDSUBQUERY = 9;
-  public int JJTSUBQUERY = 10;
-  public int JJTSINGLERELATION = 11;
-  public int JJTRELATIONSPEC = 12;
-  public int JJTSCHEMANAME = 13;
-  public int JJTRELATIONNAME = 14;
-  public int JJTJOINCLAUSE = 15;
-  public int JJTINNERJOINSPEC = 16;
-  public int JJTOUTERJOINSPEC = 17;
-  public int JJTCROSSJOINSPEC = 18;
-  public int JJTONCLAUSE = 19;
-  public int JJTWHERECLAUSE = 20;
-  public int JJTHAVINGCLAUSE = 21;
-  public int JJTGROUPBYCLAUSE = 22;
-  public int JJTGROUPBYLIST = 23;
-  public int JJTGROUPBYEXPRESSION = 24;
-  public int JJTORDERBYCLAUSE = 25;
-  public int JJTORDERBYLIST = 26;
-  public int JJTORDERBYEXPRESSION = 27;
-  public int JJTLIMITCLAUSE = 28;
-  public int JJTLIMITOFFSET = 29;
-  public int JJTLIMITCOUNT = 30;
-  public int JJTVALUEEXPRESSION = 31;
-  public int JJTARITHMETICALOPERATOR = 32;
-  public int JJTEQUALITYTEST = 33;
-  public int JJTLOGICALTEST = 34;
-  public int JJTNULLTEST = 35;
-  public int JJTBETWEENTEST = 36;
-  public int JJTPARENTHESIZEDEXPRESSION = 37;
-  public int JJTOPERANDEXPRESSION = 38;
-  public int JJTUNARYOPERATOR = 39;
-  public int JJTUNARYOPERAND = 40;
-  public int JJTFUNCTIONCALL = 41;
-  public int JJTORDINARYFUNCTIONCALL = 42;
-  public int JJTFUNCTIONNAME = 43;
-  public int JJTARGLIST = 44;
-  public int JJTAGGREGATEFUNCTIONCALL = 45;
-  public int JJTBUILTINFUNCTIONCALL = 46;
-  public int JJTCASTCALL = 47;
-  public int JJTCONVERTCALL = 48;
-  public int JJTEXISTSCALL = 49;
-  public int JJTINTEST = 50;
-  public int JJTCASECALL = 51;
-  public int JJTSIMPLECASEEXPRESSION = 52;
-  public int JJTSEARCHEDCASEEXPRESSION = 53;
-  public int JJTWHENCLAUSES = 54;
-  public int JJTWHENCLAUSE = 55;
-  public int JJTWHENTEST = 56;
-  public int JJTWHENOPTIONEXPRESSION = 57;
-  public int JJTDEFAULTEXPRESSION = 58;
-  public int JJTENCODINGNAME = 59;
-  public int JJTARGUMENT = 60;
-  public int JJTCOLUMNEXPRESSION = 61;
-  public int JJTFULLYQUALIFIEDCOLUMNNAME = 62;
-  public int JJTQUALIFIEDCOLUMNNAME = 63;
-  public int JJTRELATIONNAMEORALIAS = 64;
-  public int JJTUNQUALIFIEDCOLUMNNAME = 65;
-  public int JJTCOLUMNNAME = 66;
-  public int JJTALIAS = 67;
-  public int JJTSEARCHCONDITION = 68;
-  public int JJTLITERAL = 69;
-  public int JJTNUMERICORSTRINGLITERAL = 70;
-  public int JJTBOOLEANLITERAL = 71;
-  public int JJTNULLLITERAL = 72;
-  public int JJTTYPE = 73;
-  public int JJTNUMERICTYPE = 74;
-  public int JJTSTRINGTYPE = 75;
-  public int JJTBOOLEANTYPE = 76;
-  public int JJTDATETIMETYPE = 77;
+  public int JJTMODIFIER = 4;
+  public int JJTASTERISK = 5;
+  public int JJTSELECTLIST = 6;
+  public int JJTSELECTEXPRESSION = 7;
+  public int JJTFROMLIST = 8;
+  public int JJTFROMLISTEXPRESSION = 9;
+  public int JJTRELATION = 10;
+  public int JJTNAMEDSUBQUERY = 11;
+  public int JJTSUBQUERY = 12;
+  public int JJTSINGLERELATION = 13;
+  public int JJTRELATIONSPEC = 14;
+  public int JJTSCHEMANAME = 15;
+  public int JJTRELATIONNAME = 16;
+  public int JJTJOINCLAUSE = 17;
+  public int JJTINNERJOINSPEC = 18;
+  public int JJTOUTERJOINSPEC = 19;
+  public int JJTCROSSJOINSPEC = 20;
+  public int JJTONCLAUSE = 21;
+  public int JJTWHERECLAUSE = 22;
+  public int JJTHAVINGCLAUSE = 23;
+  public int JJTGROUPBYCLAUSE = 24;
+  public int JJTGROUPBYLIST = 25;
+  public int JJTGROUPBYEXPRESSION = 26;
+  public int JJTORDERBYCLAUSE = 27;
+  public int JJTORDERBYLIST = 28;
+  public int JJTORDERBYEXPRESSION = 29;
+  public int JJTLIMITCLAUSE = 30;
+  public int JJTLIMITOFFSET = 31;
+  public int JJTLIMITCOUNT = 32;
+  public int JJTVALUEEXPRESSION = 33;
+  public int JJTARITHMETICALOPERATOR = 34;
+  public int JJTEQUALITYTEST = 35;
+  public int JJTLOGICALTEST = 36;
+  public int JJTNULLTEST = 37;
+  public int JJTBETWEENTEST = 38;
+  public int JJTPARENTHESIZEDEXPRESSION = 39;
+  public int JJTOPERANDEXPRESSION = 40;
+  public int JJTUNARYOPERATOR = 41;
+  public int JJTUNARYOPERAND = 42;
+  public int JJTFUNCTIONCALL = 43;
+  public int JJTORDINARYFUNCTIONCALL = 44;
+  public int JJTFUNCTIONNAME = 45;
+  public int JJTARGLIST = 46;
+  public int JJTAGGREGATEFUNCTIONCALL = 47;
+  public int JJTBUILTINFUNCTIONCALL = 48;
+  public int JJTCASTCALL = 49;
+  public int JJTCONVERTCALL = 50;
+  public int JJTEXISTSCALL = 51;
+  public int JJTINTEST = 52;
+  public int JJTCASECALL = 53;
+  public int JJTSIMPLECASEEXPRESSION = 54;
+  public int JJTSEARCHEDCASEEXPRESSION = 55;
+  public int JJTWHENCLAUSES = 56;
+  public int JJTWHENCLAUSE = 57;
+  public int JJTWHENTEST = 58;
+  public int JJTWHENOPTIONEXPRESSION = 59;
+  public int JJTDEFAULTEXPRESSION = 60;
+  public int JJTENCODINGNAME = 61;
+  public int JJTARGUMENT = 62;
+  public int JJTCOLUMNEXPRESSION = 63;
+  public int JJTFULLYQUALIFIEDCOLUMNNAME = 64;
+  public int JJTQUALIFIEDCOLUMNNAME = 65;
+  public int JJTRELATIONNAMEORALIAS = 66;
+  public int JJTUNQUALIFIEDCOLUMNNAME = 67;
+  public int JJTCOLUMNNAME = 68;
+  public int JJTALIAS = 69;
+  public int JJTIDENTIFIER = 70;
+  public int JJTSEARCHCONDITION = 71;
+  public int JJTLITERAL = 72;
+  public int JJTNUMERICORSTRINGLITERAL = 73;
+  public int JJTBOOLEANLITERAL = 74;
+  public int JJTNULLLITERAL = 75;
+  public int JJTTYPE = 76;
+  public int JJTNUMERICTYPE = 77;
+  public int JJTSTRINGTYPE = 78;
+  public int JJTBOOLEANTYPE = 79;
+  public int JJTDATETIMETYPE = 80;
 
 
   public String[] jjtNodeName = {
@@ -88,6 +91,8 @@ public interface SQLParserTreeConstants
     "SqlStatement",
     "SqlOperator",
     "Query",
+    "Modifier",
+    "Asterisk",
     "SelectList",
     "SelectExpression",
     "FromList",
@@ -152,6 +157,7 @@ public interface SQLParserTreeConstants
     "UnqualifiedColumnName",
     "ColumnName",
     "Alias",
+    "Identifier",
     "SearchCondition",
     "Literal",
     "NumericOrStringLiteral",
@@ -164,4 +170,4 @@ public interface SQLParserTreeConstants
     "DatetimeType",
   };
 }
-/* JavaCC - OriginalChecksum=6fc33d848657af1946da6343c038b140 (do not edit this line) */
+/* JavaCC - OriginalChecksum=67bbadd068463d86416e041d6ee05d4a (do not edit this line) */
