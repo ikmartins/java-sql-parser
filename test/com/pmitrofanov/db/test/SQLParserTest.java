@@ -58,8 +58,13 @@ public class SQLParserTest {
     // public void hello() {}
 
     private String recurseTree(Node t, int level) {
-        String res = StringUtils.repeat(": ", level)
-                   + t.toString() + "\n";
+        String res = StringUtils.repeat(". ", level);
+        /*if (t instanceof SqlValue) {
+            res += "[ " + ((SqlValue) t).getValue() + " ]";
+        } else*/ {
+            res += t.toString();
+        }
+        res += "\n";
         for (int i = 0; i < t.jjtGetNumChildren(); i++) {
             res += recurseTree(t.jjtGetChild(i), level + 1);
         }
@@ -79,7 +84,7 @@ public class SQLParserTest {
             Node n = parser.SqlScript();
             testOutput += recurseTree(n, 0);
         } catch (ParseException e) {
-            testOutput += "Invalid SQL\n";
+            testOutput += "Invalid SQL:\n" + e.getMessage();
             fail(e.getMessage());
         } finally {
             System.out.println(testOutput);

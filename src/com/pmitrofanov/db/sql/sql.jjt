@@ -1,5 +1,7 @@
 options {
+    NODE_CLASS = "SQLNode";
     IGNORE_CASE = true;
+    STATIC = false;
 }
 
 PARSER_BEGIN(SQLParser)
@@ -7,23 +9,47 @@ PARSER_BEGIN(SQLParser)
 package com.pmitrofanov.db.sql;
 
 import java.io.*;
+import javax.xml.parsers.*;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.*;
+import javax.xml.transform.stream.*;
+import org.w3c.dom.*;
 
 public class SQLParser {
 
-  public static void main(String args[]) throws ParseException {
-    String fileName = "test.sql";
-    try {
-        SQLParser parser = new SQLParser(new FileReader(fileName));
-        SimpleNode t = parser.SqlScript();
-        System.out.println("Parsed successfully.");
-        t.dump(">");
-    } catch (IOException e) {
-        System.out.println("File not found: " + fileName);
-    } catch (ParseException e) {
-        System.out.println("Parse failed due to incorrect input. See details below.");
-        throw e;
+    private static DocumentBuilderFactory documentBuilderFactory;
+    { documentBuilderFactory = DocumentBuilderFactory.newInstance(); }
+
+    private static DocumentBuilder documentBuilder;
+    { try { documentBuilderFactory.newDocumentBuilder(); }
+      catch (ParserConfigurationException e) {  } }
+
+    private Document document;
+
+    void createDocument() throws NullPointerException {
+        document = documentBuilder.newDocument();
+        Element rootElement = document.createElement("sql");
+        document.appendChild(rootElement);
     }
-  }
+
+    public static void main(String args[]) throws ParseException {
+        String fileName = "test.sql";
+        try {
+            SQLParser parser = new SQLParser(new FileReader(fileName));
+            parser.createDocument();
+            SimpleNode t = parser.SqlScript();
+            System.out.println("Parsed successfully.");
+            t.dump(">");
+        } catch (IOException e) {
+            System.out.println("File not found: " + fileName);
+        } catch (ParseException e) {
+            System.out.println("Parse failed due to incorrect input. See details below.");
+            throw e;
+        } catch (NullPointerException e) {
+            System.out.println("Problems with the parser configuration. See details below.");
+            throw e;
+        }
+    }
 
 }
 
@@ -294,8 +320,8 @@ void Query() :
 {}
 {
   <SELECT>
-  [ <ALL> | <DISTINCT> ]
-  ( <ASTERISK> | SelectList() )
+  [ Modifier() ]
+  ( Asterisk() | SelectList() )
   [ FromList()
     [ WhereClause() ]
     [ GroupByClause() ]
@@ -303,6 +329,19 @@ void Query() :
     [ OrderByClause() ]
     [ LimitClause() ]
   ]
+}
+
+void Modifier() :
+{ Token t; }
+{
+    ( t = <ALL>
+    | t = <DISTINCT> )
+}
+
+void Asterisk() :
+{}
+{
+    <ASTERISK>
 }
 
 /*
@@ -332,7 +371,7 @@ void SelectExpression() :
 {}
 {   
     (   /* This looks ugly but I haven't found a better way to make it work. */
-        LOOKAHEAD(5) RelationName() <PERIOD> <ASTERISK>
+        LOOKAHEAD(5) RelationName() <PERIOD> Asterisk()
     |   LOOKAHEAD(5) SchemaName() <PERIOD> RelationName() <PERIOD> <ASTERISK>
     |   ValueExpression() [ LOOKAHEAD(2) [ <AS> ] Alias() ]
     )
@@ -434,7 +473,7 @@ void RelationSpec() :
 void SchemaName() :
 {}
 {
-    <IDENTIFIER>
+    Identifier()
 }
 
 /*
@@ -444,7 +483,7 @@ void SchemaName() :
 void RelationName() :
 {}
 {
-    <IDENTIFIER>
+    Identifier()
 }
 
 /*
@@ -836,7 +875,7 @@ void OrdinaryFunctionCall() :
 void FunctionName() :
 {}
 {
-    <IDENTIFIER>
+    Identifier()
 }
 
 /*
@@ -866,7 +905,7 @@ void AggregateFunctionCall() :
 {}
 {
     ( <MIN> | <MAX> | <COUNT> | <AVG> | <SUM> | <AGGREGATE> FunctionName() )
-    <L_PAREN> [ <ALL> | <DISTINCT> ] ( <ASTERISK> | Argument() ) <R_PAREN>
+    <L_PAREN> [ Modifier() ] ( Asterisk() | Argument() ) <R_PAREN>
 }
 
 /*
@@ -1045,7 +1084,7 @@ void DefaultExpression() :
 void EncodingName() :
 {}
 {
-    <IDENTIFIER>
+    Identifier()
 }
 
 /*
@@ -1102,7 +1141,7 @@ void QualifiedColumnName() :
 void RelationNameOrAlias() :
 {}
 {
-    <IDENTIFIER>
+    Identifier()
 }
 
 /*
@@ -1122,7 +1161,7 @@ void UnqualifiedColumnName() :
 void ColumnName() :
 {}
 {
-    <IDENTIFIER>
+    Identifier()
 }
 
 /*
@@ -1132,7 +1171,13 @@ void ColumnName() :
 void Alias() :
 {}
 {
-    <IDENTIFIER>
+    Identifier()
+}
+
+void Identifier() :
+{ Token t; }
+{
+    t = <IDENTIFIER>
 }
 
 /*
@@ -1163,9 +1208,11 @@ void Literal() :
 }
 
 void NumericOrStringLiteral() :
-{}
+{ Token t; }
 {
-    <INTEGER_LITERAL> | <FLOATING_POINT_LITERAL> | <STRING_LITERAL>
+    ( t = <INTEGER_LITERAL>
+    | t = <FLOATING_POINT_LITERAL>
+    | t = <STRING_LITERAL> )
 }
 
 /*
@@ -1173,9 +1220,10 @@ void NumericOrStringLiteral() :
 */
 
 void BooleanLiteral() :
-{}
+{ Token t; }
 {
-    <TRUE> | <FALSE>
+    ( t = <TRUE>
+    | t = <FALSE> )
 }
 
 /*
@@ -1183,9 +1231,9 @@ void BooleanLiteral() :
 */
 
 void NullLiteral() :
-{}
+{ Token t; }
 {
-    <NULL>
+    t = <NULL>
 }
 
 // ##############################################################
@@ -1212,13 +1260,13 @@ void Type() :
 */
 
 void NumericType() :
-{}
+{ Token t; }
 {
-        <TINYINT>
-    |   <SMALLINT>
-    |   <INT>
-    |   <INTEGER>
-    |   <BIGINT>
+    ( t = <TINYINT>
+    | t = <SMALLINT>
+    | t = <INT>
+    | t = <INTEGER>
+    | t = <BIGINT> )
 }
 
 /*
@@ -1226,9 +1274,10 @@ void NumericType() :
 */
 
 void StringType() :
-{}
+{ Token t; }
 {
-    <CHAR> | <VARCHAR>
+    ( t = <CHAR>
+    | t = <VARCHAR> )
 }
 
 /*
@@ -1236,9 +1285,9 @@ void StringType() :
 */
 
 void BooleanType() :
-{}
+{ Token t; }
 {
-    <BOOLEAN>
+    t = <BOOLEAN>
 }
 
 /*
@@ -1246,8 +1295,10 @@ void BooleanType() :
 */
 
 void DatetimeType() :
-{}
+{ Token t; }
 {
-    <DATE> | <TIME> | <DATETIME>
+    ( t = <DATE>
+    | t = <TIME>
+    | t = <DATETIME> )
 }
 
