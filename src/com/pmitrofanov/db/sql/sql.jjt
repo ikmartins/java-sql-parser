@@ -1,5 +1,6 @@
 options {
     NODE_CLASS = "SQLNode";
+    NODE_USES_PARSER = true;
     IGNORE_CASE = true;
     STATIC = false;
 }
@@ -17,37 +18,54 @@ import org.w3c.dom.*;
 
 public class SQLParser {
 
-    private static DocumentBuilderFactory documentBuilderFactory;
-    { documentBuilderFactory = DocumentBuilderFactory.newInstance(); }
-
-    private static DocumentBuilder documentBuilder;
-    { try { documentBuilderFactory.newDocumentBuilder(); }
-      catch (ParserConfigurationException e) {  } }
-
+    private DocumentBuilderFactory documentBuilderFactory;
+    private DocumentBuilder documentBuilder;
     private Document document;
+    private Element rootElement;
 
-    void createDocument() throws NullPointerException {
+    Document getDocument() {
+        return document;
+    }
+
+    public void setUpDOM() throws ParserConfigurationException {
+        documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        documentBuilder = documentBuilderFactory.newDocumentBuilder();
         document = documentBuilder.newDocument();
-        Element rootElement = document.createElement("sql");
+        rootElement = document.createElement("sql");
         document.appendChild(rootElement);
     }
 
-    public static void main(String args[]) throws ParseException {
+    public void populateDOM() throws ParseException {
+        rootElement.appendChild(SqlScript().getElement());
+    }
+
+    public void dumpDOM() throws Exception {
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        DOMSource source = new DOMSource(document);
+        StreamResult result =  new StreamResult(System.out);
+        transformer.transform(source, result);
+    }
+
+    public static void main(String args[]) {
         String fileName = "test.sql";
         try {
             SQLParser parser = new SQLParser(new FileReader(fileName));
-            parser.createDocument();
-            SimpleNode t = parser.SqlScript();
+            parser.setUpDOM();
+            parser.populateDOM();
             System.out.println("Parsed successfully.");
-            t.dump(">");
+            parser.dumpDOM();
         } catch (IOException e) {
             System.out.println("File not found: " + fileName);
         } catch (ParseException e) {
             System.out.println("Parse failed due to incorrect input. See details below.");
-            throw e;
-        } catch (NullPointerException e) {
+            System.out.println(e.getStackTrace());
+        } catch (ParserConfigurationException e) {
             System.out.println("Problems with the parser configuration. See details below.");
-            throw e;
+            System.out.println(e.getStackTrace());
+        } catch (Exception e) {
+            System.out.println("Oops, an unrecognised error. See details below.");
+            System.out.println(e.getStackTrace());
         }
     }
 
@@ -276,7 +294,7 @@ TOKEN :
 
 
 
-SimpleNode SqlScript() :
+SQLNode SqlScript() :
 {}
 {
   (

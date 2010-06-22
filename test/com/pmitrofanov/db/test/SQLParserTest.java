@@ -14,7 +14,6 @@ import static org.junit.Assert.*;
 
 import com.pmitrofanov.db.sql.*;
 import java.io.*;
-import org.apache.commons.lang.*;
 
 /**
  *
@@ -37,38 +36,15 @@ public class SQLParserTest {
     }
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() throws Exception {
         PipedReader reader = new PipedReader();
         writer = new BufferedWriter(new PipedWriter(reader));
-        try {
-            parser.ReInit(reader);
-        } catch (NullPointerException e) {
-            parser = new SQLParser(reader);
-        }
+        parser = new SQLParser(reader);
+        parser.setUpDOM();
     }
 
     @After
     public void tearDown() {
-    }
-
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
-
-    private String recurseTree(Node t, int level) {
-        String res = StringUtils.repeat(". ", level);
-        /*if (t instanceof SqlValue) {
-            res += "[ " + ((SqlValue) t).getValue() + " ]";
-        } else*/ {
-            res += t.toString();
-        }
-        res += "\n";
-        for (int i = 0; i < t.jjtGetNumChildren(); i++) {
-            res += recurseTree(t.jjtGetChild(i), level + 1);
-        }
-        return res;
     }
 
     private void passString(String sql) {
@@ -81,10 +57,13 @@ public class SQLParserTest {
             throw new Error(e.getMessage());
         }
         try {
-            Node n = parser.SqlScript();
-            testOutput += recurseTree(n, 0);
+            parser.populateDOM();
+            parser.dumpDOM();
         } catch (ParseException e) {
             testOutput += "Invalid SQL:\n" + e.getMessage();
+            fail(e.getMessage());
+        } catch (Exception e) {
+            testOutput += "Parsing error:\n" + e.getStackTrace();
             fail(e.getMessage());
         } finally {
             System.out.println(testOutput);
