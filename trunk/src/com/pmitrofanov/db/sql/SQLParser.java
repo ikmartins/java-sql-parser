@@ -10,46 +10,63 @@ import org.w3c.dom.*;
 
 public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLParserConstants {/*@bgen(jjtree)*/
   protected JJTSQLParserState jjtree = new JJTSQLParserState();
-    private static DocumentBuilderFactory documentBuilderFactory;
-    { documentBuilderFactory = DocumentBuilderFactory.newInstance(); }
-
-    private static DocumentBuilder documentBuilder;
-    { try { documentBuilderFactory.newDocumentBuilder(); }
-      catch (ParserConfigurationException e) {  } }
-
+    private DocumentBuilderFactory documentBuilderFactory;
+    private DocumentBuilder documentBuilder;
     private Document document;
+    private Element rootElement;
 
-    void createDocument() throws NullPointerException {
+    Document getDocument() {
+        return document;
+    }
+
+    public void setUpDOM() throws ParserConfigurationException {
+        documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        documentBuilder = documentBuilderFactory.newDocumentBuilder();
         document = documentBuilder.newDocument();
-        Element rootElement = document.createElement("sql");
+        rootElement = document.createElement("sql");
         document.appendChild(rootElement);
     }
 
-    public static void main(String args[]) throws ParseException {
+    public void populateDOM() throws ParseException {
+        rootElement.appendChild(SqlScript().getElement());
+    }
+
+    public void dumpDOM() throws Exception {
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        DOMSource source = new DOMSource(document);
+        StreamResult result =  new StreamResult(System.out);
+        transformer.transform(source, result);
+    }
+
+    public static void main(String args[]) {
         String fileName = "test.sql";
         try {
             SQLParser parser = new SQLParser(new FileReader(fileName));
-            parser.createDocument();
-            SimpleNode t = parser.SqlScript();
+            parser.setUpDOM();
+            parser.populateDOM();
             System.out.println("Parsed successfully.");
-            t.dump(">");
+            parser.dumpDOM();
         } catch (IOException e) {
             System.out.println("File not found: " + fileName);
         } catch (ParseException e) {
             System.out.println("Parse failed due to incorrect input. See details below.");
-            throw e;
-        } catch (NullPointerException e) {
+            System.out.println(e.getStackTrace());
+        } catch (ParserConfigurationException e) {
             System.out.println("Problems with the parser configuration. See details below.");
-            throw e;
+            System.out.println(e.getStackTrace());
+        } catch (Exception e) {
+            System.out.println("Oops, an unrecognised error. See details below.");
+            System.out.println(e.getStackTrace());
         }
     }
 
 /**************************************
  *           NONTERMINALS             *
  **************************************/
-  final public SimpleNode SqlScript() throws ParseException {
+  final public SQLNode SqlScript() throws ParseException {
  /*@bgen(jjtree) SqlScript */
-  SQLNode jjtn000 = new SQLNode(JJTSQLSCRIPT);
+  SQLNode jjtn000 = new SQLNode(this, JJTSQLSCRIPT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -93,7 +110,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 
   final public void SqlStatement() throws ParseException {
  /*@bgen(jjtree) SqlStatement */
-  SQLNode jjtn000 = new SQLNode(JJTSQLSTATEMENT);
+  SQLNode jjtn000 = new SQLNode(this, JJTSQLSTATEMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -122,7 +139,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 
   final public void SqlOperator() throws ParseException {
  /*@bgen(jjtree) SqlOperator */
-  SQLNode jjtn000 = new SQLNode(JJTSQLOPERATOR);
+  SQLNode jjtn000 = new SQLNode(this, JJTSQLOPERATOR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -164,7 +181,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void Query() throws ParseException {
  /*@bgen(jjtree) Query */
-  SQLNode jjtn000 = new SQLNode(JJTQUERY);
+  SQLNode jjtn000 = new SQLNode(this, JJTQUERY);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -283,7 +300,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 
   final public void Modifier() throws ParseException {
  /*@bgen(jjtree) Modifier */
-  SQLNode jjtn000 = new SQLNode(JJTMODIFIER);
+  SQLNode jjtn000 = new SQLNode(this, JJTMODIFIER);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);Token t;
     try {
@@ -308,7 +325,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 
   final public void Asterisk() throws ParseException {
  /*@bgen(jjtree) Asterisk */
-  SQLNode jjtn000 = new SQLNode(JJTASTERISK);
+  SQLNode jjtn000 = new SQLNode(this, JJTASTERISK);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -331,7 +348,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void SelectList() throws ParseException {
  /*@bgen(jjtree) SelectList */
-  SQLNode jjtn000 = new SQLNode(JJTSELECTLIST);
+  SQLNode jjtn000 = new SQLNode(this, JJTSELECTLIST);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -377,7 +394,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void SelectExpression() throws ParseException {
  /*@bgen(jjtree) SelectExpression */
-  SQLNode jjtn000 = new SQLNode(JJTSELECTEXPRESSION);
+  SQLNode jjtn000 = new SQLNode(this, JJTSELECTEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -470,7 +487,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void FromList() throws ParseException {
  /*@bgen(jjtree) FromList */
-  SQLNode jjtn000 = new SQLNode(JJTFROMLIST);
+  SQLNode jjtn000 = new SQLNode(this, JJTFROMLIST);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -517,7 +534,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void FromListExpression() throws ParseException {
  /*@bgen(jjtree) FromListExpression */
-  SQLNode jjtn000 = new SQLNode(JJTFROMLISTEXPRESSION);
+  SQLNode jjtn000 = new SQLNode(this, JJTFROMLISTEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -559,7 +576,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void Relation() throws ParseException {
  /*@bgen(jjtree) Relation */
-  SQLNode jjtn000 = new SQLNode(JJTRELATION);
+  SQLNode jjtn000 = new SQLNode(this, JJTRELATION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -602,7 +619,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void NamedSubquery() throws ParseException {
  /*@bgen(jjtree) NamedSubquery */
-  SQLNode jjtn000 = new SQLNode(JJTNAMEDSUBQUERY);
+  SQLNode jjtn000 = new SQLNode(this, JJTNAMEDSUBQUERY);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -647,7 +664,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void Subquery() throws ParseException {
  /*@bgen(jjtree) Subquery */
-  SQLNode jjtn000 = new SQLNode(JJTSUBQUERY);
+  SQLNode jjtn000 = new SQLNode(this, JJTSUBQUERY);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -681,7 +698,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void SingleRelation() throws ParseException {
  /*@bgen(jjtree) SingleRelation */
-  SQLNode jjtn000 = new SQLNode(JJTSINGLERELATION);
+  SQLNode jjtn000 = new SQLNode(this, JJTSINGLERELATION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -725,7 +742,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void RelationSpec() throws ParseException {
  /*@bgen(jjtree) RelationSpec */
-  SQLNode jjtn000 = new SQLNode(JJTRELATIONSPEC);
+  SQLNode jjtn000 = new SQLNode(this, JJTRELATIONSPEC);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -762,7 +779,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void SchemaName() throws ParseException {
  /*@bgen(jjtree) SchemaName */
-  SQLNode jjtn000 = new SQLNode(JJTSCHEMANAME);
+  SQLNode jjtn000 = new SQLNode(this, JJTSCHEMANAME);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -793,7 +810,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void RelationName() throws ParseException {
  /*@bgen(jjtree) RelationName */
-  SQLNode jjtn000 = new SQLNode(JJTRELATIONNAME);
+  SQLNode jjtn000 = new SQLNode(this, JJTRELATIONNAME);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -827,7 +844,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void JoinClause() throws ParseException {
  /*@bgen(jjtree) JoinClause */
-  SQLNode jjtn000 = new SQLNode(JJTJOINCLAUSE);
+  SQLNode jjtn000 = new SQLNode(this, JJTJOINCLAUSE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -877,7 +894,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void InnerJoinSpec() throws ParseException {
  /*@bgen(jjtree) InnerJoinSpec */
-  SQLNode jjtn000 = new SQLNode(JJTINNERJOINSPEC);
+  SQLNode jjtn000 = new SQLNode(this, JJTINNERJOINSPEC);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -918,7 +935,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void OuterJoinSpec() throws ParseException {
  /*@bgen(jjtree) OuterJoinSpec */
-  SQLNode jjtn000 = new SQLNode(JJTOUTERJOINSPEC);
+  SQLNode jjtn000 = new SQLNode(this, JJTOUTERJOINSPEC);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -971,7 +988,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void CrossJoinSpec() throws ParseException {
  /*@bgen(jjtree) CrossJoinSpec */
-  SQLNode jjtn000 = new SQLNode(JJTCROSSJOINSPEC);
+  SQLNode jjtn000 = new SQLNode(this, JJTCROSSJOINSPEC);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -1005,7 +1022,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void OnClause() throws ParseException {
  /*@bgen(jjtree) OnClause */
-  SQLNode jjtn000 = new SQLNode(JJTONCLAUSE);
+  SQLNode jjtn000 = new SQLNode(this, JJTONCLAUSE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -1038,7 +1055,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void WhereClause() throws ParseException {
  /*@bgen(jjtree) WhereClause */
-  SQLNode jjtn000 = new SQLNode(JJTWHERECLAUSE);
+  SQLNode jjtn000 = new SQLNode(this, JJTWHERECLAUSE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -1071,7 +1088,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void HavingClause() throws ParseException {
  /*@bgen(jjtree) HavingClause */
-  SQLNode jjtn000 = new SQLNode(JJTHAVINGCLAUSE);
+  SQLNode jjtn000 = new SQLNode(this, JJTHAVINGCLAUSE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -1104,7 +1121,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void GroupByClause() throws ParseException {
  /*@bgen(jjtree) GroupByClause */
-  SQLNode jjtn000 = new SQLNode(JJTGROUPBYCLAUSE);
+  SQLNode jjtn000 = new SQLNode(this, JJTGROUPBYCLAUSE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -1143,7 +1160,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void GroupByList() throws ParseException {
  /*@bgen(jjtree) GroupByList */
-  SQLNode jjtn000 = new SQLNode(JJTGROUPBYLIST);
+  SQLNode jjtn000 = new SQLNode(this, JJTGROUPBYLIST);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -1187,7 +1204,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void GroupByExpression() throws ParseException {
  /*@bgen(jjtree) GroupByExpression */
-  SQLNode jjtn000 = new SQLNode(JJTGROUPBYEXPRESSION);
+  SQLNode jjtn000 = new SQLNode(this, JJTGROUPBYEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -1219,7 +1236,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void OrderByClause() throws ParseException {
  /*@bgen(jjtree) OrderByClause */
-  SQLNode jjtn000 = new SQLNode(JJTORDERBYCLAUSE);
+  SQLNode jjtn000 = new SQLNode(this, JJTORDERBYCLAUSE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -1258,7 +1275,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void OrderByList() throws ParseException {
  /*@bgen(jjtree) OrderByList */
-  SQLNode jjtn000 = new SQLNode(JJTORDERBYLIST);
+  SQLNode jjtn000 = new SQLNode(this, JJTORDERBYLIST);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -1302,7 +1319,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void OrderByExpression() throws ParseException {
  /*@bgen(jjtree) OrderByExpression */
-  SQLNode jjtn000 = new SQLNode(JJTORDERBYEXPRESSION);
+  SQLNode jjtn000 = new SQLNode(this, JJTORDERBYEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -1354,7 +1371,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void LimitClause() throws ParseException {
  /*@bgen(jjtree) LimitClause */
-  SQLNode jjtn000 = new SQLNode(JJTLIMITCLAUSE);
+  SQLNode jjtn000 = new SQLNode(this, JJTLIMITCLAUSE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -1395,7 +1412,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void LimitOffset() throws ParseException {
  /*@bgen(jjtree) LimitOffset */
-  SQLNode jjtn000 = new SQLNode(JJTLIMITOFFSET);
+  SQLNode jjtn000 = new SQLNode(this, JJTLIMITOFFSET);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -1426,7 +1443,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants, SQLPar
 */
   final public void LimitCount() throws ParseException {
  /*@bgen(jjtree) LimitCount */
-  SQLNode jjtn000 = new SQLNode(JJTLIMITCOUNT);
+  SQLNode jjtn000 = new SQLNode(this, JJTLIMITCOUNT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -1485,7 +1502,7 @@ void ValueExpression() :
 */
   final public void ValueExpression() throws ParseException {
  /*@bgen(jjtree) ValueExpression */
-  SQLNode jjtn000 = new SQLNode(JJTVALUEEXPRESSION);
+  SQLNode jjtn000 = new SQLNode(this, JJTVALUEEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -1586,7 +1603,7 @@ void ValueExpression() :
 */
   final public void ArithmeticalOperator() throws ParseException {
  /*@bgen(jjtree) ArithmeticalOperator */
-  SQLNode jjtn000 = new SQLNode(JJTARITHMETICALOPERATOR);
+  SQLNode jjtn000 = new SQLNode(this, JJTARITHMETICALOPERATOR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -1646,7 +1663,7 @@ void ValueExpression() :
 */
   final public void EqualityTest() throws ParseException {
  /*@bgen(jjtree) EqualityTest */
-  SQLNode jjtn000 = new SQLNode(JJTEQUALITYTEST);
+  SQLNode jjtn000 = new SQLNode(this, JJTEQUALITYTEST);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -1703,7 +1720,7 @@ void ValueExpression() :
 */
   final public void LogicalTest() throws ParseException {
  /*@bgen(jjtree) LogicalTest */
-  SQLNode jjtn000 = new SQLNode(JJTLOGICALTEST);
+  SQLNode jjtn000 = new SQLNode(this, JJTLOGICALTEST);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -1753,7 +1770,7 @@ void ValueExpression() :
 */
   final public void NullTest() throws ParseException {
  /*@bgen(jjtree) NullTest */
-  SQLNode jjtn000 = new SQLNode(JJTNULLTEST);
+  SQLNode jjtn000 = new SQLNode(this, JJTNULLTEST);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -1781,7 +1798,7 @@ void ValueExpression() :
 */
   final public void BetweenTest() throws ParseException {
  /*@bgen(jjtree) BetweenTest */
-  SQLNode jjtn000 = new SQLNode(JJTBETWEENTEST);
+  SQLNode jjtn000 = new SQLNode(this, JJTBETWEENTEST);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -1818,7 +1835,7 @@ void ValueExpression() :
 */
   final public void ParenthesizedExpression() throws ParseException {
  /*@bgen(jjtree) ParenthesizedExpression */
-  SQLNode jjtn000 = new SQLNode(JJTPARENTHESIZEDEXPRESSION);
+  SQLNode jjtn000 = new SQLNode(this, JJTPARENTHESIZEDEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -1853,7 +1870,7 @@ void ValueExpression() :
 */
   final public void OperandExpression() throws ParseException {
  /*@bgen(jjtree) OperandExpression */
-  SQLNode jjtn000 = new SQLNode(JJTOPERANDEXPRESSION);
+  SQLNode jjtn000 = new SQLNode(this, JJTOPERANDEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -1918,7 +1935,7 @@ void ValueExpression() :
 */
   final public void UnaryOperator() throws ParseException {
  /*@bgen(jjtree) UnaryOperator */
-  SQLNode jjtn000 = new SQLNode(JJTUNARYOPERATOR);
+  SQLNode jjtn000 = new SQLNode(this, JJTUNARYOPERATOR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -1974,7 +1991,7 @@ void ValueExpression() :
 */
   final public void UnaryOperand() throws ParseException {
  /*@bgen(jjtree) UnaryOperand */
-  SQLNode jjtn000 = new SQLNode(JJTUNARYOPERAND);
+  SQLNode jjtn000 = new SQLNode(this, JJTUNARYOPERAND);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -2033,7 +2050,7 @@ void ValueExpression() :
 */
   final public void FunctionCall() throws ParseException {
  /*@bgen(jjtree) FunctionCall */
-  SQLNode jjtn000 = new SQLNode(JJTFUNCTIONCALL);
+  SQLNode jjtn000 = new SQLNode(this, JJTFUNCTIONCALL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -2088,7 +2105,7 @@ void ValueExpression() :
 */
   final public void OrdinaryFunctionCall() throws ParseException {
  /*@bgen(jjtree) OrdinaryFunctionCall */
-  SQLNode jjtn000 = new SQLNode(JJTORDINARYFUNCTIONCALL);
+  SQLNode jjtn000 = new SQLNode(this, JJTORDINARYFUNCTIONCALL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -2122,7 +2139,7 @@ void ValueExpression() :
 */
   final public void FunctionName() throws ParseException {
  /*@bgen(jjtree) FunctionName */
-  SQLNode jjtn000 = new SQLNode(JJTFUNCTIONNAME);
+  SQLNode jjtn000 = new SQLNode(this, JJTFUNCTIONNAME);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -2159,7 +2176,7 @@ void ValueExpression() :
 */
   final public void ArgList() throws ParseException {
  /*@bgen(jjtree) ArgList */
-  SQLNode jjtn000 = new SQLNode(JJTARGLIST);
+  SQLNode jjtn000 = new SQLNode(this, JJTARGLIST);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -2205,7 +2222,7 @@ void ValueExpression() :
 */
   final public void AggregateFunctionCall() throws ParseException {
  /*@bgen(jjtree) AggregateFunctionCall */
-  SQLNode jjtn000 = new SQLNode(JJTAGGREGATEFUNCTIONCALL);
+  SQLNode jjtn000 = new SQLNode(this, JJTAGGREGATEFUNCTIONCALL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -2310,7 +2327,7 @@ void ValueExpression() :
 */
   final public void BuiltInFunctionCall() throws ParseException {
  /*@bgen(jjtree) BuiltInFunctionCall */
-  SQLNode jjtn000 = new SQLNode(JJTBUILTINFUNCTIONCALL);
+  SQLNode jjtn000 = new SQLNode(this, JJTBUILTINFUNCTIONCALL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -2361,7 +2378,7 @@ void ValueExpression() :
 */
   final public void CastCall() throws ParseException {
  /*@bgen(jjtree) CastCall */
-  SQLNode jjtn000 = new SQLNode(JJTCASTCALL);
+  SQLNode jjtn000 = new SQLNode(this, JJTCASTCALL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -2400,7 +2417,7 @@ void ValueExpression() :
 */
   final public void ConvertCall() throws ParseException {
  /*@bgen(jjtree) ConvertCall */
-  SQLNode jjtn000 = new SQLNode(JJTCONVERTCALL);
+  SQLNode jjtn000 = new SQLNode(this, JJTCONVERTCALL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -2437,7 +2454,7 @@ void ValueExpression() :
 */
   final public void ExistsCall() throws ParseException {
  /*@bgen(jjtree) ExistsCall */
-  SQLNode jjtn000 = new SQLNode(JJTEXISTSCALL);
+  SQLNode jjtn000 = new SQLNode(this, JJTEXISTSCALL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -2470,7 +2487,7 @@ void ValueExpression() :
 */
   final public void InTest() throws ParseException {
  /*@bgen(jjtree) InTest */
-  SQLNode jjtn000 = new SQLNode(JJTINTEST);
+  SQLNode jjtn000 = new SQLNode(this, JJTINTEST);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -2517,7 +2534,7 @@ void ValueExpression() :
 */
   final public void CaseCall() throws ParseException {
  /*@bgen(jjtree) CaseCall */
-  SQLNode jjtn000 = new SQLNode(JJTCASECALL);
+  SQLNode jjtn000 = new SQLNode(this, JJTCASECALL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -2585,7 +2602,7 @@ void ValueExpression() :
 */
   final public void SimpleCaseExpression() throws ParseException {
  /*@bgen(jjtree) SimpleCaseExpression */
-  SQLNode jjtn000 = new SQLNode(JJTSIMPLECASEEXPRESSION);
+  SQLNode jjtn000 = new SQLNode(this, JJTSIMPLECASEEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -2619,7 +2636,7 @@ void ValueExpression() :
 */
   final public void SearchedCaseExpression() throws ParseException {
  /*@bgen(jjtree) SearchedCaseExpression */
-  SQLNode jjtn000 = new SQLNode(JJTSEARCHEDCASEEXPRESSION);
+  SQLNode jjtn000 = new SQLNode(this, JJTSEARCHEDCASEEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -2664,7 +2681,7 @@ void ValueExpression() :
 */
   final public void WhenClauses() throws ParseException {
  /*@bgen(jjtree) WhenClauses */
-  SQLNode jjtn000 = new SQLNode(JJTWHENCLAUSES);
+  SQLNode jjtn000 = new SQLNode(this, JJTWHENCLAUSES);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -2708,7 +2725,7 @@ void ValueExpression() :
 */
   final public void WhenClause() throws ParseException {
  /*@bgen(jjtree) WhenClause */
-  SQLNode jjtn000 = new SQLNode(JJTWHENCLAUSE);
+  SQLNode jjtn000 = new SQLNode(this, JJTWHENCLAUSE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -2742,7 +2759,7 @@ void ValueExpression() :
 */
   final public void WhenTest() throws ParseException {
  /*@bgen(jjtree) WhenTest */
-  SQLNode jjtn000 = new SQLNode(JJTWHENTEST);
+  SQLNode jjtn000 = new SQLNode(this, JJTWHENTEST);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -2773,7 +2790,7 @@ void ValueExpression() :
 */
   final public void WhenOptionExpression() throws ParseException {
  /*@bgen(jjtree) WhenOptionExpression */
-  SQLNode jjtn000 = new SQLNode(JJTWHENOPTIONEXPRESSION);
+  SQLNode jjtn000 = new SQLNode(this, JJTWHENOPTIONEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -2804,7 +2821,7 @@ void ValueExpression() :
 */
   final public void DefaultExpression() throws ParseException {
  /*@bgen(jjtree) DefaultExpression */
-  SQLNode jjtn000 = new SQLNode(JJTDEFAULTEXPRESSION);
+  SQLNode jjtn000 = new SQLNode(this, JJTDEFAULTEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -2835,7 +2852,7 @@ void ValueExpression() :
 */
   final public void EncodingName() throws ParseException {
  /*@bgen(jjtree) EncodingName */
-  SQLNode jjtn000 = new SQLNode(JJTENCODINGNAME);
+  SQLNode jjtn000 = new SQLNode(this, JJTENCODINGNAME);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -2866,7 +2883,7 @@ void ValueExpression() :
 */
   final public void Argument() throws ParseException {
  /*@bgen(jjtree) Argument */
-  SQLNode jjtn000 = new SQLNode(JJTARGUMENT);
+  SQLNode jjtn000 = new SQLNode(this, JJTARGUMENT);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -2900,7 +2917,7 @@ void ValueExpression() :
 */
   final public void ColumnExpression() throws ParseException {
  /*@bgen(jjtree) ColumnExpression */
-  SQLNode jjtn000 = new SQLNode(JJTCOLUMNEXPRESSION);
+  SQLNode jjtn000 = new SQLNode(this, JJTCOLUMNEXPRESSION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -2946,7 +2963,7 @@ void ValueExpression() :
 */
   final public void FullyQualifiedColumnName() throws ParseException {
  /*@bgen(jjtree) FullyQualifiedColumnName */
-  SQLNode jjtn000 = new SQLNode(JJTFULLYQUALIFIEDCOLUMNNAME);
+  SQLNode jjtn000 = new SQLNode(this, JJTFULLYQUALIFIEDCOLUMNNAME);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -2982,7 +2999,7 @@ void ValueExpression() :
 */
   final public void QualifiedColumnName() throws ParseException {
  /*@bgen(jjtree) QualifiedColumnName */
-  SQLNode jjtn000 = new SQLNode(JJTQUALIFIEDCOLUMNNAME);
+  SQLNode jjtn000 = new SQLNode(this, JJTQUALIFIEDCOLUMNNAME);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -3015,7 +3032,7 @@ void ValueExpression() :
 */
   final public void RelationNameOrAlias() throws ParseException {
  /*@bgen(jjtree) RelationNameOrAlias */
-  SQLNode jjtn000 = new SQLNode(JJTRELATIONNAMEORALIAS);
+  SQLNode jjtn000 = new SQLNode(this, JJTRELATIONNAMEORALIAS);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -3046,7 +3063,7 @@ void ValueExpression() :
 */
   final public void UnqualifiedColumnName() throws ParseException {
  /*@bgen(jjtree) UnqualifiedColumnName */
-  SQLNode jjtn000 = new SQLNode(JJTUNQUALIFIEDCOLUMNNAME);
+  SQLNode jjtn000 = new SQLNode(this, JJTUNQUALIFIEDCOLUMNNAME);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -3077,7 +3094,7 @@ void ValueExpression() :
 */
   final public void ColumnName() throws ParseException {
  /*@bgen(jjtree) ColumnName */
-  SQLNode jjtn000 = new SQLNode(JJTCOLUMNNAME);
+  SQLNode jjtn000 = new SQLNode(this, JJTCOLUMNNAME);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -3108,7 +3125,7 @@ void ValueExpression() :
 */
   final public void Alias() throws ParseException {
  /*@bgen(jjtree) Alias */
-  SQLNode jjtn000 = new SQLNode(JJTALIAS);
+  SQLNode jjtn000 = new SQLNode(this, JJTALIAS);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -3136,7 +3153,7 @@ void ValueExpression() :
 
   final public void Identifier() throws ParseException {
  /*@bgen(jjtree) Identifier */
-  SQLNode jjtn000 = new SQLNode(JJTIDENTIFIER);
+  SQLNode jjtn000 = new SQLNode(this, JJTIDENTIFIER);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);Token t;
     try {
@@ -3153,7 +3170,7 @@ void ValueExpression() :
 */
   final public void SearchCondition() throws ParseException {
  /*@bgen(jjtree) SearchCondition */
-  SQLNode jjtn000 = new SQLNode(JJTSEARCHCONDITION);
+  SQLNode jjtn000 = new SQLNode(this, JJTSEARCHCONDITION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -3189,7 +3206,7 @@ void ValueExpression() :
 */
   final public void Literal() throws ParseException {
  /*@bgen(jjtree) Literal */
-  SQLNode jjtn000 = new SQLNode(JJTLITERAL);
+  SQLNode jjtn000 = new SQLNode(this, JJTLITERAL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -3234,7 +3251,7 @@ void ValueExpression() :
 
   final public void NumericOrStringLiteral() throws ParseException {
  /*@bgen(jjtree) NumericOrStringLiteral */
-  SQLNode jjtn000 = new SQLNode(JJTNUMERICORSTRINGLITERAL);
+  SQLNode jjtn000 = new SQLNode(this, JJTNUMERICORSTRINGLITERAL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);Token t;
     try {
@@ -3265,7 +3282,7 @@ void ValueExpression() :
 */
   final public void BooleanLiteral() throws ParseException {
  /*@bgen(jjtree) BooleanLiteral */
-  SQLNode jjtn000 = new SQLNode(JJTBOOLEANLITERAL);
+  SQLNode jjtn000 = new SQLNode(this, JJTBOOLEANLITERAL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);Token t;
     try {
@@ -3293,7 +3310,7 @@ void ValueExpression() :
 */
   final public void NullLiteral() throws ParseException {
  /*@bgen(jjtree) NullLiteral */
-  SQLNode jjtn000 = new SQLNode(JJTNULLLITERAL);
+  SQLNode jjtn000 = new SQLNode(this, JJTNULLLITERAL);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);Token t;
     try {
@@ -3316,7 +3333,7 @@ void ValueExpression() :
 */
   final public void Type() throws ParseException {
  /*@bgen(jjtree) Type */
-  SQLNode jjtn000 = new SQLNode(JJTTYPE);
+  SQLNode jjtn000 = new SQLNode(this, JJTTYPE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
@@ -3371,7 +3388,7 @@ void ValueExpression() :
 */
   final public void NumericType() throws ParseException {
  /*@bgen(jjtree) NumericType */
-  SQLNode jjtn000 = new SQLNode(JJTNUMERICTYPE);
+  SQLNode jjtn000 = new SQLNode(this, JJTNUMERICTYPE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);Token t;
     try {
@@ -3408,7 +3425,7 @@ void ValueExpression() :
 */
   final public void StringType() throws ParseException {
  /*@bgen(jjtree) StringType */
-  SQLNode jjtn000 = new SQLNode(JJTSTRINGTYPE);
+  SQLNode jjtn000 = new SQLNode(this, JJTSTRINGTYPE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);Token t;
     try {
@@ -3436,7 +3453,7 @@ void ValueExpression() :
 */
   final public void BooleanType() throws ParseException {
  /*@bgen(jjtree) BooleanType */
-  SQLNode jjtn000 = new SQLNode(JJTBOOLEANTYPE);
+  SQLNode jjtn000 = new SQLNode(this, JJTBOOLEANTYPE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);Token t;
     try {
@@ -3453,7 +3470,7 @@ void ValueExpression() :
 */
   final public void DatetimeType() throws ParseException {
  /*@bgen(jjtree) DatetimeType */
-  SQLNode jjtn000 = new SQLNode(JJTDATETIMETYPE);
+  SQLNode jjtn000 = new SQLNode(this, JJTDATETIMETYPE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);Token t;
     try {
@@ -3561,26 +3578,6 @@ void ValueExpression() :
     try { return !jj_3_12(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(11, xla); }
-  }
-
-  private boolean jj_3R_18() {
-    if (jj_3R_27()) return true;
-    if (jj_scan_token(PERIOD)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_42() {
-    if (jj_scan_token(CAST)) return true;
-    if (jj_scan_token(L_PAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_17() {
-    if (jj_3R_13()) return true;
-    if (jj_scan_token(PERIOD)) return true;
-    if (jj_3R_11()) return true;
-    if (jj_scan_token(PERIOD)) return true;
-    return false;
   }
 
   private boolean jj_3R_40() {
@@ -4130,6 +4127,26 @@ void ValueExpression() :
   private boolean jj_3R_36() {
     if (jj_scan_token(AGGREGATE)) return true;
     if (jj_3R_35()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_18() {
+    if (jj_3R_27()) return true;
+    if (jj_scan_token(PERIOD)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_42() {
+    if (jj_scan_token(CAST)) return true;
+    if (jj_scan_token(L_PAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_17() {
+    if (jj_3R_13()) return true;
+    if (jj_scan_token(PERIOD)) return true;
+    if (jj_3R_11()) return true;
+    if (jj_scan_token(PERIOD)) return true;
     return false;
   }
 
