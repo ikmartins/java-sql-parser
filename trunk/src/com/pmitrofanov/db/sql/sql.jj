@@ -12,9 +12,6 @@ package com.pmitrofanov.db.sql;
 
 import java.io.*;
 import javax.xml.parsers.*;
-import javax.xml.transform.*;
-import javax.xml.transform.dom.*;
-import javax.xml.transform.stream.*;
 import org.w3c.dom.*;
 
 public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants/*@egen*/ {/*@bgen(jjtree)*/
@@ -27,7 +24,7 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants/*@egen*
     private Document document;
     private Element rootElement;
 
-    Document getDocument() {
+    public Document getDocument() {
         return document;
     }
 
@@ -43,14 +40,6 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants/*@egen*
         rootElement.appendChild(SqlScript().getElement());
     }
 
-    public void dumpDOM() throws Exception {
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
-        DOMSource source = new DOMSource(document);
-        StreamResult result =  new StreamResult(System.out);
-        transformer.transform(source, result);
-    }
-
     public static void main(String args[]) {
         String fileName = "test.sql";
         try {
@@ -58,7 +47,6 @@ public class SQLParser/*@bgen(jjtree)*/implements SQLParserTreeConstants/*@egen*
             parser.setUpDOM();
             parser.populateDOM();
             System.out.println("Parsed successfully.");
-            parser.dumpDOM();
         } catch (IOException e) {
             System.out.println("File not found: " + fileName);
         } catch (ParseException e) {
@@ -473,6 +461,12 @@ void Modifier() :
 /*@egen*/
     ( t = <ALL>
     | t = <DISTINCT> )/*@bgen(jjtree)*/
+    {
+      jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+    }
+/*@egen*/
+    { jjtn000.setTextValue(t.image); }/*@bgen(jjtree)*/
     } finally {
       if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -2989,6 +2983,12 @@ void Identifier() :
     try {
 /*@egen*/
     t = <IDENTIFIER>/*@bgen(jjtree)*/
+    {
+      jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+    }
+/*@egen*/
+    { jjtn000.setTextValue(t.image); }/*@bgen(jjtree)*/
     } finally {
       if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -3088,6 +3088,12 @@ void NumericOrStringLiteral() :
     ( t = <INTEGER_LITERAL>
     | t = <FLOATING_POINT_LITERAL>
     | t = <STRING_LITERAL> )/*@bgen(jjtree)*/
+    {
+      jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+    }
+/*@egen*/
+    { jjtn000.setTextValue(t.image); }/*@bgen(jjtree)*/
     } finally {
       if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -3111,6 +3117,12 @@ void BooleanLiteral() :
 /*@egen*/
     ( t = <TRUE>
     | t = <FALSE> )/*@bgen(jjtree)*/
+    {
+      jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+    }
+/*@egen*/
+    { jjtn000.setTextValue(t.image); }/*@bgen(jjtree)*/
     } finally {
       if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -3133,6 +3145,12 @@ void NullLiteral() :
     try {
 /*@egen*/
     t = <NULL>/*@bgen(jjtree)*/
+    {
+      jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+    }
+/*@egen*/
+    { jjtn000.setTextValue(t.image); }/*@bgen(jjtree)*/
     } finally {
       if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -3204,6 +3222,12 @@ void NumericType() :
     | t = <INT>
     | t = <INTEGER>
     | t = <BIGINT> )/*@bgen(jjtree)*/
+    {
+      jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+    }
+/*@egen*/
+    { jjtn000.setTextValue(t.image); }/*@bgen(jjtree)*/
     } finally {
       if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -3227,6 +3251,12 @@ void StringType() :
 /*@egen*/
     ( t = <CHAR>
     | t = <VARCHAR> )/*@bgen(jjtree)*/
+    {
+      jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+    }
+/*@egen*/
+    { jjtn000.setTextValue(t.image); }/*@bgen(jjtree)*/
     } finally {
       if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -3249,6 +3279,12 @@ void BooleanType() :
     try {
 /*@egen*/
     t = <BOOLEAN>/*@bgen(jjtree)*/
+    {
+      jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+    }
+/*@egen*/
+    { jjtn000.setTextValue(t.image); }/*@bgen(jjtree)*/
     } finally {
       if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -3273,6 +3309,12 @@ void DatetimeType() :
     ( t = <DATE>
     | t = <TIME>
     | t = <DATETIME> )/*@bgen(jjtree)*/
+    {
+      jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+    }
+/*@egen*/
+    { jjtn000.setTextValue(t.image); }/*@bgen(jjtree)*/
     } finally {
       if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);

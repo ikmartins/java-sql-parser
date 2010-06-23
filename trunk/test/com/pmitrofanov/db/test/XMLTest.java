@@ -17,6 +17,7 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
 import org.w3c.dom.*;
+import java.io.*;
 
 /**
  *
@@ -56,8 +57,10 @@ public class XMLTest {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         DOMSource source = new DOMSource(document);
-        StreamResult result =  new StreamResult(System.out);
+        Writer out = new StringWriter();
+        StreamResult result =  new StreamResult(out);
         transformer.transform(source, result);
+        System.out.println(out.toString());
         assertEquals(0, 0);
     }
 

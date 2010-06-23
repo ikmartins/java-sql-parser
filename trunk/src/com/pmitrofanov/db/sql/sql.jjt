@@ -11,9 +11,6 @@ package com.pmitrofanov.db.sql;
 
 import java.io.*;
 import javax.xml.parsers.*;
-import javax.xml.transform.*;
-import javax.xml.transform.dom.*;
-import javax.xml.transform.stream.*;
 import org.w3c.dom.*;
 
 public class SQLParser {
@@ -23,7 +20,7 @@ public class SQLParser {
     private Document document;
     private Element rootElement;
 
-    Document getDocument() {
+    public Document getDocument() {
         return document;
     }
 
@@ -39,14 +36,6 @@ public class SQLParser {
         rootElement.appendChild(SqlScript().getElement());
     }
 
-    public void dumpDOM() throws Exception {
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
-        DOMSource source = new DOMSource(document);
-        StreamResult result =  new StreamResult(System.out);
-        transformer.transform(source, result);
-    }
-
     public static void main(String args[]) {
         String fileName = "test.sql";
         try {
@@ -54,7 +43,6 @@ public class SQLParser {
             parser.setUpDOM();
             parser.populateDOM();
             System.out.println("Parsed successfully.");
-            parser.dumpDOM();
         } catch (IOException e) {
             System.out.println("File not found: " + fileName);
         } catch (ParseException e) {
@@ -354,6 +342,7 @@ void Modifier() :
 {
     ( t = <ALL>
     | t = <DISTINCT> )
+    { jjtThis.setTextValue(t.image); }
 }
 
 void Asterisk() :
@@ -1196,6 +1185,7 @@ void Identifier() :
 { Token t; }
 {
     t = <IDENTIFIER>
+    { jjtThis.setTextValue(t.image); }
 }
 
 /*
@@ -1231,6 +1221,7 @@ void NumericOrStringLiteral() :
     ( t = <INTEGER_LITERAL>
     | t = <FLOATING_POINT_LITERAL>
     | t = <STRING_LITERAL> )
+    { jjtThis.setTextValue(t.image); }
 }
 
 /*
@@ -1242,6 +1233,7 @@ void BooleanLiteral() :
 {
     ( t = <TRUE>
     | t = <FALSE> )
+    { jjtThis.setTextValue(t.image); }
 }
 
 /*
@@ -1252,6 +1244,7 @@ void NullLiteral() :
 { Token t; }
 {
     t = <NULL>
+    { jjtThis.setTextValue(t.image); }
 }
 
 // ##############################################################
@@ -1285,6 +1278,7 @@ void NumericType() :
     | t = <INT>
     | t = <INTEGER>
     | t = <BIGINT> )
+    { jjtThis.setTextValue(t.image); }
 }
 
 /*
@@ -1296,6 +1290,7 @@ void StringType() :
 {
     ( t = <CHAR>
     | t = <VARCHAR> )
+    { jjtThis.setTextValue(t.image); }
 }
 
 /*
@@ -1306,6 +1301,7 @@ void BooleanType() :
 { Token t; }
 {
     t = <BOOLEAN>
+    { jjtThis.setTextValue(t.image); }
 }
 
 /*
@@ -1318,5 +1314,6 @@ void DatetimeType() :
     ( t = <DATE>
     | t = <TIME>
     | t = <DATETIME> )
+    { jjtThis.setTextValue(t.image); }
 }
 

@@ -14,6 +14,10 @@ import static org.junit.Assert.*;
 
 import com.pmitrofanov.db.sql.*;
 import java.io.*;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.*;
+import javax.xml.transform.stream.*;
+import org.w3c.dom.*;
 
 /**
  *
@@ -47,8 +51,19 @@ public class SQLParserTest {
     public void tearDown() {
     }
 
+    public String dumpDocument(Document document)
+            throws TransformerConfigurationException, TransformerException {
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        DOMSource source = new DOMSource(document);
+        Writer out = new StringWriter();
+        StreamResult result =  new StreamResult(out);
+        transformer.transform(source, result);
+        return out.toString();
+    }
+
     private void passString(String sql) {
-        String testOutput = "Test " + testNum++ + ":\n\n" + sql + "\n\n";
+        String testOutput = "Test " + testNum++ + ":\n" + sql + "\n";
         try {
             writer.write(sql);
             writer.close();
@@ -58,7 +73,7 @@ public class SQLParserTest {
         }
         try {
             parser.populateDOM();
-            parser.dumpDOM();
+            testOutput += dumpDocument(parser.getDocument());
         } catch (ParseException e) {
             testOutput += "Invalid SQL:\n" + e.getMessage();
             fail(e.getMessage());
@@ -66,7 +81,7 @@ public class SQLParserTest {
             testOutput += "Parsing error:\n" + e.getStackTrace();
             fail(e.getMessage());
         } finally {
-            System.out.println(testOutput);
+            System.out.println(testOutput + "\n");
         }
     }
 
