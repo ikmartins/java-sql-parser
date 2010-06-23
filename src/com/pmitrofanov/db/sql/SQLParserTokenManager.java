@@ -2,9 +2,6 @@
 package com.pmitrofanov.db.sql;
 import java.io.*;
 import javax.xml.parsers.*;
-import javax.xml.transform.*;
-import javax.xml.transform.dom.*;
-import javax.xml.transform.stream.*;
 import org.w3c.dom.*;
 
 /** Token Manager. */

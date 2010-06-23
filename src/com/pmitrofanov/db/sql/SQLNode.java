@@ -15,6 +15,7 @@ public class SQLNode extends SimpleNode {
 
   private Document document;
   private Element element;
+  private String textValue = "";
 
   public SQLNode(int i) {
     super(i);
@@ -31,9 +32,14 @@ public class SQLNode extends SimpleNode {
   }
 
   @Override
+  public void jjtOpen() {
+     super.jjtOpen();
+     element = document.createElement(toString());
+  }
+
+  @Override
   public void jjtClose() {
      super.jjtClose();
-     element = document.createElement(toString());
      for (int i = 0; i < jjtGetNumChildren(); i++) {
         element.appendChild(jjtGetChild(i).getElement());
      }
@@ -42,5 +48,21 @@ public class SQLNode extends SimpleNode {
   public Element getElement() {
       return element;
   }
+
+    /**
+     * @return the value
+     */
+    public String getTextValue() {
+        return textValue;
+    }
+
+    /**
+     * @param value the value to set
+     */
+    public void setTextValue(String text) {
+        textValue = text;
+        Text textValueNode = document.createTextNode(textValue);
+        element.appendChild(textValueNode);
+    }
 
 }
